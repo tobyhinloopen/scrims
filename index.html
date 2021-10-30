@@ -39,7 +39,7 @@ const PLAYERS = [
   {name: 'Mashiro#12790', tank: 2250, dps: 2750, supp: 2250, roles: "111111"},
   {name: 'Mercrazzle#2687', tank: 2350, dps: 1750, supp: 2100, roles: "111111"},
   {name: 'CodexMortem#1370', tank: 2604, dps: 2344, supp: 2319, roles: "122101"},
-  {name: 'Maniclings#6606', tank: 2250, dps: 2250, supp: 2700, roles: "000020", comment: "Prefers not to play but is available to fill"},
+  {name: 'Maniclings#6606', tank: 2250, dps: 2250, supp: 2700, roles: "000040", comment: "Prefers not to play but is available to fill"},
   {name: 'ForsenCalls#1771', tank: 3000, dps: 3500, supp: 2900, roles: "122210"},
   {name: 'Broseidon#11439', tank: 3038, dps: 3108, supp: 3687, roles: "011022"},
   {name: 'Tomjo5#1129', tank: 3335, dps: 2250, supp: 2561, roles: "020200"},
@@ -89,7 +89,7 @@ function getTeamPairScore(teamPair) {
   const teamSrB = teamSr(b);
   const srDiff = Math.abs(teamSrA - teamSrB);
 
-  return (0 - srDiff) + roleScoreSum * 4;
+  return (0 - srDiff) + roleScoreSum * 10;
 }
 
 function renderPlayerHtml(player, roleIndex) {
