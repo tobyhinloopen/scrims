@@ -32,9 +32,6 @@
   <tbody id="teams"></tbody>
 </table>
 
-<div>
-  <a href="#five">5v5</a> - <a href="#">6v6</a>
-</div>
 
 <form id="players-form">
 
@@ -59,9 +56,13 @@
 ]
 </textarea>
 
-    <input type="submit" class="btn btn-primary" value="Update">
-    <input type="reset" class="btn btn-danger" onclick="localStorage.clear(); location.reload();" value="Reset">
+    <input type="submit" class="btn btn-primary" value="Update &amp; Refresh">
+    <input type="reset" class="btn btn-danger ms-4" onclick="if(confirm('this will delete all your changes and revert back to the original data. continue?')) { localStorage.clear(); location.reload(); }" value="Reset">
 </form>
+
+<div class="my-4">
+  <a href="#five">5v5</a> - <a href="#">6v6</a>
+</div>
 
 </div>
 
@@ -83,7 +84,6 @@ form.addEventListener("submit", (event) => {
   window.location.reload();
 })
 
-const FIVE_V_FIVE = location.hash == "#five";
 
 window.onhashchange = () => window.location.reload()
 
@@ -91,10 +91,7 @@ const ROLES = ["Main Tank", "Off Tank", "Hitscan DPS", "Flex DPS", "Main Support
 
 const PLAYERS = eval(document.getElementById("players").value)
 
-if (PLAYERS.length <= (FIVE_V_FIVE ? 10 : 12)) {
-  alert(`Not enough players`);
-  throw new Error(`not enough players`);
-}
+const FIVE_V_FIVE = location.hash == "#five" || PLAYERS.length < 12;
 
 const ROLE_WEIGHT = [-99, 1, 3, 9];
 
