@@ -5,6 +5,13 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <title>Scrims Balance</title>
 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/javascript/javascript.min.js"></script>
+
+<div class="container-fluid">
+
 <table class="table my-4 w-100">
   <thead>
     <tr>
@@ -25,33 +32,69 @@
   <tbody id="teams"></tbody>
 </table>
 
-<div class="p-4">
+<div>
   <a href="#five">5v5</a> - <a href="#">6v6</a>
 </div>
 
+<form id="players-form">
+
+<textarea id="players" class="form-control my-4" style="font-size: 10pt; font-family: monospace;" rows="20">
+
+// ROLES: Main Tank, Off Tank, Hitscan, Flex DPS, Main Support, Flex Support
+// 0: Don't assign me this; 1: Okay; 2: I prefer this!; 3: I really want this
+[
+  {name: 'elark#2601', tank: 2500, dps: 2750, supp: 3500, roles: "012212"},
+  {name: 'gamebuster#21298', tank: 2300, dps: 2100, supp: 2000, roles: "021212"},
+  {name: 'Valfreyja#2252', tank: 1584, dps: 1592, supp: 1891, roles: "000021"},
+  {name: 'BornInPurple#1395', tank: 2250, dps: 1750, supp: 2992, roles: "112200"},
+  {name: 'Prekaza#1965', tank: 2620, dps: 2731, supp: 3225, roles: "022012"},
+  {name: 'becky1360#2293', tank: 2159, dps: 1683, supp: 1771, roles: "120112"},
+  {name: 'Mashiro#12790', tank: 2250, dps: 2750, supp: 2250, roles: "111111"},
+  {name: 'Mercrazzle#2687', tank: 2350, dps: 1750, supp: 2100, roles: "111111"},
+  {name: 'CodexMortem#1370', tank: 2604, dps: 2344, supp: 2319, roles: "122101"},
+  {name: 'Maniclings#6606', tank: 2250, dps: 2250, supp: 2700, roles: "000030"},
+  {name: 'ForsenCalls#1771', tank: 3000, dps: 3500, supp: 2900, roles: "122210"},
+  {name: 'Broseidon#11439', tank: 3038, dps: 3108, supp: 3687, roles: "011022"},
+  {name: 'Tomjo5#1129', tank: 3335, dps: 2250, supp: 2561, roles: "020200"},
+]
+</textarea>
+
+    <input type="submit" class="btn btn-primary" value="Update">
+    <input type="reset" class="btn btn-danger" onclick="localStorage.clear(); location.reload();" value="Reset">
+</form>
+
+</div>
+
 <script>
+if (localStorage.getItem("players")) {
+  document.getElementById('players').value = localStorage.getItem("players");
+}
+
+const editor = CodeMirror.fromTextArea(document.getElementById('players'), {
+  mode: "javascript",
+});
+
+editor.setSize("100%", 480);
+
+const form = document.getElementById("players-form");
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  localStorage.setItem("players", document.getElementById("players").value);
+  window.location.reload();
+})
+
 const FIVE_V_FIVE = location.hash == "#five";
 
 window.onhashchange = () => window.location.reload()
 
 const ROLES = ["Main Tank", "Off Tank", "Hitscan DPS", "Flex DPS", "Main Support", "Flex Support"]
 
-// ROLES: Main Tank, Off Tank, Hitscan, Flex DPS, Main Support, Flex Support
-const PLAYERS = [
-  {name: 'elark#2601', tank: 2500, dps: 2750, supp: 3500, roles: "012212"},
-  {name: 'gamebuster#21298', tank: 2300, dps: 2100, supp: 2000, roles: "021212"},
-  {name: 'Valfreyja#2252', tank: 1584, dps: 1592, supp: 1891, roles: "000021"},
-  {name: 'BornInPurple#1395', tank: 2250, dps: 1750, supp: 2992, roles: "112200"},
-  {name: 'Prekaza#1965', tank: 2620, dps: 2731, supp: 3225, roles: "022012"},
-  {name: 'becky1360#2293', tank: 2159, dps: 1683, supp: 1771, roles: "120112", comment: "Prefers not to play but is available to fill"},
-  {name: 'Mashiro#12790', tank: 2250, dps: 2750, supp: 2250, roles: "111111"},
-  {name: 'Mercrazzle#2687', tank: 2350, dps: 1750, supp: 2100, roles: "111111"},
-  {name: 'CodexMortem#1370', tank: 2604, dps: 2344, supp: 2319, roles: "122101"},
-  {name: 'Maniclings#6606', tank: 2250, dps: 2250, supp: 2700, roles: "000030", comment: "Prefers not to play but is available to fill"},
-  {name: 'ForsenCalls#1771', tank: 3000, dps: 3500, supp: 2900, roles: "122210"},
-  {name: 'Broseidon#11439', tank: 3038, dps: 3108, supp: 3687, roles: "011022"},
-  {name: 'Tomjo5#1129', tank: 3335, dps: 2250, supp: 2561, roles: "020200"},
-];
+const PLAYERS = eval(document.getElementById("players").value)
+
+if (PLAYERS.length <= (FIVE_V_FIVE ? 10 : 12)) {
+  alert(`Not enough players`);
+  throw new Error(`not enough players`);
+}
 
 const ROLE_WEIGHT = [-99, 1, 3, 9];
 
@@ -69,6 +112,8 @@ function roleScore(roles, slot) {
 
   return max == 0 ? -10 : max;
 }
+
+
 
 const teamPairs = _.sortBy(
   _.times(1000, () => createRandomTeamPair()),
