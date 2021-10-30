@@ -63,7 +63,7 @@ function roleScore(roles, slot) {
 }
 
 const teamPairs = _.sortBy(
-  _.times(100, () => createRandomTeamPair()),
+  _.times(1000, () => createRandomTeamPair()),
   (teamPair) => -getTeamPairScore(teamPair));
 
 const [TEAM_BLUE, TEAM_RED] = teamPairs[0];
@@ -98,7 +98,7 @@ function getTeamPairScore(teamPair) {
   const srDiff = Math.abs(teamSrA - teamSrB);
   const total = (0 - srDiff) + roleScoreSum * 10;
 
-  // console.log({ teamPair, srDiff, roleScoreSum, a: teamRoleScore(a), b: teamRoleScore(b), total });
+  console.log({ teamPair, srDiff, roleScoreSum, total });
 
   return (0 - srDiff) + roleScoreSum * 10;
 }
@@ -122,7 +122,7 @@ for (let i = 0; i < 6; i++) {
   tbody.appendChild(tr);
 }
 
-// console.log(getTeamPairScore([TEAM_BLUE, TEAM_RED]))
+console.log(getTeamPairScore([TEAM_BLUE, TEAM_RED]))
 
 document.querySelector("#sr1").textContent = `avg ${teamSr(TEAM_BLUE).toFixed(0)}`;
 document.querySelector("#sr2").textContent = `avg ${teamSr(TEAM_RED).toFixed(0)}`;
