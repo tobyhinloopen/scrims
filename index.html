@@ -25,7 +25,15 @@
   <tbody id="teams"></tbody>
 </table>
 
+<div class="p-4">
+  <a href="#five">5v5</a> - <a href="#">6v6</a>
+</div>
+
 <script>
+const FIVE_V_FIVE = location.hash == "#five";
+
+window.onhashchange = () => window.location.reload()
+
 const ROLES = ["Main Tank", "Off Tank", "Hitscan DPS", "Flex DPS", "Main Support", "Flex Support"]
 
 // ROLES: Main Tank, Off Tank, Hitscan, Flex DPS, Main Support, Flex Support
@@ -71,17 +79,24 @@ const [TEAM_BLUE, TEAM_RED] = teamPairs[0];
 function teamSr(team) {
   return team
     .map((player, index) => playerSr(player, index))
-    .reduce((sum, sr) => sum + sr, 0) / team.length;
+    .reduce((sum, sr) => sum + sr, 0) / (FIVE_V_FIVE ? 5 : 6);
 }
 
 function createRandomTeamPair() {
-  return _.zip(..._(PLAYERS)
+  const teamPair = _.zip(..._(PLAYERS)
     .shuffle()
-    .slice(0, 12)
+    .slice(0, FIVE_V_FIVE ? 10 : 12)
     // .sortBy((player) => player.tank + player.dps + player.dps)
     .chunk(2)
     .map((pair) => _.shuffle(pair))
     .toJSON());
+
+  if (FIVE_V_FIVE) {
+    teamPair[0].splice(1, 0, { name: "", tank: 0, dps: 0, supp: 0, roles: "111111" })
+    teamPair[1].splice(1, 0, { name: "", tank: 0, dps: 0, supp: 0, roles: "111111" })
+  }
+
+  return teamPair;
 }
 
 function teamRoleScore(team) {
