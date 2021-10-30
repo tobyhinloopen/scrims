@@ -45,7 +45,7 @@ const PLAYERS = [
   {name: 'Tomjo5#1129', tank: 3335, dps: 2250, supp: 2561, roles: "020200"},
 ];
 
-const ROLE_WEIGHT = [-3, 1, 3, 9];
+const ROLE_WEIGHT = [-99, 1, 3, 9];
 
 function roleScore(roles, slot) {
   const exactRole = ROLE_WEIGHT[roles[slot]] * 3;
